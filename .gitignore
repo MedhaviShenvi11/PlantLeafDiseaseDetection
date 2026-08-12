@@ -1,0 +1,20 @@
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Plant disease dataset
+dataset/
+
+# User uploaded images
+uploads/
+
+# Environment variables
+.env
+
+# Jupyter Notebook temporary files
+.ipynb_checkpoints/
+
+model.h5

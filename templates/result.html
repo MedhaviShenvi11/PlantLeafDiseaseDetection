@@ -1,0 +1,325 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="result-page">
+
+    <div class="container py-5">
+
+        <!-- ================================================= -->
+        <!-- PAGE TITLE -->
+        <!-- ================================================= -->
+
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">
+                AI Disease Analysis
+            </h1>
+
+            <p class="text-muted">
+                Results generated from the uploaded plant leaf image.
+            </p>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN RESULT -->
+        <!-- ================================================= -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- ================= IMAGE ================= -->
+
+            <div class="col-lg-5">
+
+                <div class="result-card h-100">
+
+                    <div class="p-4">
+
+                        <h3 class="fw-bold mb-4">
+                            🌿 Uploaded Leaf
+                        </h3>
+
+                        <div class="image-container">
+
+                            <img
+                                src="{{ url_for('uploaded_file', filename=image) }}"
+                                class="result-image"
+                                alt="Uploaded plant leaf"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= AI RESULT ================= -->
+
+            <div class="col-lg-7">
+
+                <div class="result-card h-100">
+
+                    <div class="p-4">
+
+                        <!-- AI BADGE -->
+
+                        <span class="ai-badge">
+
+                            🤖 AI Prediction
+
+                        </span>
+
+
+                        <!-- DISEASE -->
+
+                        <h2 class="disease-title mt-4 mb-4">
+
+                            {{ disease }}
+
+                        </h2>
+
+
+                        <!-- CROP -->
+
+                        <div class="mb-4">
+
+                            <h6 class="text-muted mb-1">
+                                Detected Crop
+                            </h6>
+
+                            <h4 class="fw-bold crop-name">
+                                {{ crop }}
+                            </h4>
+
+                        </div>
+
+
+                        <!-- ================= CONFIDENCE ================= -->
+
+<div class="mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+
+        <h6 class="fw-bold mb-0">
+            Model Confidence
+        </h6>
+
+        <span class="confidence-value">
+            {{ "%.2f"|format(confidence|float) }}%
+        </span>
+
+    </div>
+
+    <!-- Confidence Bar -->
+
+    <div
+        class="confidence-bar-container"
+        data-confidence="{{ confidence|float }}"
+        role="progressbar"
+        aria-valuenow="{{ confidence|float }}"
+        aria-valuemin="0"
+        aria-valuemax="100"
+    >
+
+        <div class="confidence-bar"></div>
+
+    </div>
+
+</div>
+
+                        <!-- ================= WARNING ================= -->
+
+                        <div class="ai-warning">
+
+                            <strong>Important:</strong>
+
+                            This result is an AI-assisted prediction
+                            based on the uploaded image. It should not
+                            be treated as a definitive agricultural
+                            diagnosis.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SYMPTOMS -->
+        <!-- ================================================= -->
+
+        <div class="info-card">
+
+            <h2 class="info-title">
+                🔍 Symptoms
+            </h2>
+
+
+            {% if symptoms %}
+
+                <ul class="info-list">
+
+                    {% for symptom in symptoms %}
+
+                        <li>
+                            {{ symptom }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No symptom information is available
+                    for this prediction.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- PREVENTION -->
+        <!-- ================================================= -->
+
+        <div class="info-card">
+
+            <h2 class="info-title">
+                🛡️ Prevention
+            </h2>
+
+
+            {% if prevention %}
+
+                <ul class="info-list">
+
+                    {% for item in prevention %}
+
+                        <li>
+                            {{ item }}
+                        </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No prevention information is available
+                    for this prediction.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- RECOMMENDED STEPS -->
+        <!-- ================================================= -->
+
+        <div class="info-card">
+
+            <h2 class="info-title">
+                🌱 Recommended Steps
+            </h2>
+
+
+            {% if recommendations %}
+
+                <ol class="info-list">
+
+                    {% for step in recommendations %}
+
+                        <li>
+                            {{ step }}
+                        </li>
+
+                    {% endfor %}
+
+                </ol>
+
+            {% else %}
+
+                <p class="text-muted">
+                    No recommendations are available
+                    for this prediction.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- BUTTONS -->
+        <!-- ================================================= -->
+
+        <div class="text-center mt-5">
+
+            <a
+                href="{{ url_for('detect') }}"
+                class="btn btn-success btn-lg px-4"
+            >
+                🔄 Detect Another Leaf
+            </a>
+
+
+            <a
+                href="{{ url_for('home') }}"
+                class="btn btn-outline-success btn-lg px-4 ms-2"
+            >
+                🏠 Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const confidenceContainer = document.querySelector(
+        ".confidence-bar-container"
+    );
+
+    const confidenceBar = document.querySelector(
+        ".confidence-bar"
+    );
+
+    if (confidenceContainer && confidenceBar) {
+
+        let confidence = parseFloat(
+            confidenceContainer.dataset.confidence
+        );
+
+        if (isNaN(confidence)) {
+            confidence = 0;
+        }
+
+        confidence = Math.max(0, Math.min(100, confidence));
+
+        confidenceBar.style.width = confidence + "%";
+    }
+
+});
+</script>
+{% endblock %}
+

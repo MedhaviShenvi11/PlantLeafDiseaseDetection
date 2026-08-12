@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+            Plant Disease Detection
+        </h1>
+
+        <p class="text-muted">
+            Upload a clear image of a plant leaf and our AI
+            will analyze it for possible diseases.
+        </p>
+
+    </div>
+
+
+    <!-- ================= UPLOAD CARD ================= -->
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8 col-lg-7">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-4 p-md-5">
+
+                    {% if error %}
+
+                    <div class="alert alert-danger">
+                        <strong>Error:</strong>
+                        {{ error }}
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- Upload Form -->
+
+                    <form
+                        action="{{ url_for('detect') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        <!-- Image Selection -->
+
+                        <div class="mb-4">
+
+                            <label
+                                for="image"
+                                class="form-label fw-bold"
+                            >
+                                Select Leaf Image
+                            </label>
+
+                            <input
+                                type="file"
+                                id="image"
+                                name="image"
+                                class="form-control form-control-lg"
+                                accept="image/jpeg,image/png,image/jpg"
+                                required
+                            >
+
+                            <div class="form-text">
+                                Supported formats: JPG, JPEG and PNG.
+                            </div>
+
+                        </div>
+
+
+                        <!-- Image Preview -->
+
+                        <div
+                            id="preview-container"
+                            class="text-center mb-4"
+                            style="display:none;"
+                        >
+
+                            <p class="fw-bold mb-2">
+                                Image Preview
+                            </p>
+
+                            <img
+                                id="image-preview"
+                                src=""
+                                alt="Leaf preview"
+                                class="img-fluid rounded shadow-sm"
+                                style="max-height:300px;"
+                            >
+
+                        </div>
+
+
+                        <!-- Detect Button -->
+
+                        <div class="text-center">
+
+                            <button
+                                type="submit"
+                                class="btn btn-success btn-lg px-5"
+                            >
+                                🌿 Detect Disease
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= INFORMATION ================= -->
+
+            <div class="card border-0 shadow-sm mt-4">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold">
+                        📌 For better results
+                    </h5>
+
+                    <ul class="text-muted mb-0">
+
+                        <li class="mb-2">
+                            Use a clear image of a single plant leaf.
+                        </li>
+
+                        <li class="mb-2">
+                            Make sure the leaf is clearly visible.
+                        </li>
+
+                        <li class="mb-2">
+                            Avoid very dark or blurry images.
+                        </li>
+
+                        <li>
+                            Use an image where disease symptoms
+                            are clearly visible when possible.
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= IMAGE PREVIEW SCRIPT ================= -->
+
+<script>
+
+const imageInput = document.getElementById("image");
+
+const previewContainer =
+    document.getElementById("preview-container");
+
+const imagePreview =
+    document.getElementById("image-preview");
+
+
+imageInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (file) {
+
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+
+            imagePreview.src = event.target.result;
+
+            previewContainer.style.display = "block";
+
+        };
+
+        reader.readAsDataURL(file);
+
+    } else {
+
+        previewContainer.style.display = "none";
+
+        imagePreview.src = "";
+
+    }
+
+});
+
+</script>
+
+{% endblock %}
